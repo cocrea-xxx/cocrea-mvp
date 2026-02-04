@@ -110,7 +110,7 @@ export default function IngresoPage() {
                 onClick={resetScanner}
                 className="w-full py-6 bg-[#00FF41] text-black hover:bg-white rounded-none border-2 border-transparent hover:border-[#00FF41] text-3xl font-bold shadow-[0_0_20px_rgba(0,255,65,0.5)] transition-all uppercase tracking-widest"
             >
-                CONTINUAR >
+                CONTINUAR &gt;
             </button>
         </div>
       )}

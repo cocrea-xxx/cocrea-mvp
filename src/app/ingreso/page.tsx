@@ -49,10 +49,8 @@ export default function IngresoPage() {
 
   return (
     <div className="fixed inset-0 bg-[#000000] flex flex-col">
-      {/* HEADER: BOTONES GRANDES Y SIMBÓLICOS */}
+      {/* HEADER */}
       <div className="flex w-full h-20 border-b-4 border-[#00ff41] z-50 bg-[#000000]">
-        
-        {/* BOTÓN FLASH (⚡) */}
         <button 
             onClick={toggleFlash}
             className={`flex-1 flex items-center justify-center text-4xl border-r-4 border-[#00ff41] transition-colors duration-150 ${
@@ -62,7 +60,6 @@ export default function IngresoPage() {
             ⚡
         </button>
 
-        {/* BOTÓN ZOOM (🔍) */}
         <button 
             onClick={cycleZoom}
             className={`flex-1 flex items-center justify-center text-3xl border-r-4 border-[#00ff41] transition-colors duration-150 ${
@@ -75,7 +72,6 @@ export default function IngresoPage() {
             </div>
         </button>
 
-        {/* BOTÓN SALIR (❌) */}
         <Link 
             href="/" 
             className="flex-1 flex items-center justify-center text-4xl bg-[#000000] text-[#00ff41] active:bg-[#00ff41] active:text-[#000000] transition-colors"
@@ -84,10 +80,7 @@ export default function IngresoPage() {
         </Link>
       </div>
 
-      {/* ÁREA PRINCIPAL */}
       <main className="flex-1 relative w-full h-full bg-[#000000]">
-        
-        {/* ESTADO: ESCANEANDO */}
         {status === "scanning" && (
           <div className="w-full h-full relative">
              <Html5QrcodePlugin 
@@ -97,42 +90,31 @@ export default function IngresoPage() {
                 defaultZoom={2}
              />
              
-             {/* OVERLAY / MARCO VERDE SIMPLE */}
+             {/* MARCO GUÍA MUCHO MÁS AMPLIO PARA PERMITIR ENFOQUE A DISTANCIA */}
              <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-                <div className="w-72 h-72 relative">
-                    {/* Solo esquinas verdes gruesas */}
-                    <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-[#00ff41]"></div>
-                    <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-[#00ff41]"></div>
-                    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-[#00ff41]"></div>
-                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-[#00ff41]"></div>
+                <div className="w-[85%] h-[70%] relative">
+                    <div className="absolute top-0 left-0 w-12 h-12 border-t-8 border-l-8 border-[#00ff41]"></div>
+                    <div className="absolute top-0 right-0 w-12 h-12 border-t-8 border-r-8 border-[#00ff41]"></div>
+                    <div className="absolute bottom-0 left-0 w-12 h-12 border-b-8 border-l-8 border-[#00ff41]"></div>
+                    <div className="absolute bottom-0 right-0 w-12 h-12 border-b-8 border-r-8 border-[#00ff41]"></div>
                     
-                    {/* Centro de mira opcional */}
-                    <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-[#00ff41] opacity-50 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-[#00ff41] opacity-30 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
                 </div>
              </div>
           </div>
         )}
 
-        {/* ESTADO: ÉXITO */}
         {status === "success" && scanResult && (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-[#000000] p-6 z-50 animate-in fade-in duration-300">
-            
-            {/* CHECK GIGANTE */}
-            <div className="mb-8 text-9xl animate-bounce">
-                ✅
-            </div>
-
-            {/* NOMBRE DEL OPERARIO */}
+          <div className="w-full h-full flex flex-col items-center justify-center bg-[#000000] p-6 z-50">
+            <div className="mb-8 text-9xl animate-bounce">✅</div>
             <div className="w-full border-y-4 border-[#00ff41] py-8 text-center bg-[#000000] mb-12">
                 <p className="text-5xl font-black uppercase text-[#00ff41] break-words leading-tight">
                     {scanResult.name || "OK"}
                 </p>
             </div>
-
-            {/* BOTÓN SIGUIENTE (FLECHA) */}
             <button 
                 onClick={resetScanner} 
-                className="w-full h-32 bg-[#00ff41] text-[#000000] text-7xl rounded-2xl flex items-center justify-center active:scale-95 transition-transform shadow-[0_0_20px_rgba(0,255,65,0.5)]"
+                className="w-full h-32 bg-[#00ff41] text-[#000000] text-7xl rounded-2xl flex items-center justify-center active:scale-95 transition-transform"
             >
                 ➡️
             </button>

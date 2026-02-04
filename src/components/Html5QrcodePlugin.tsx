@@ -56,17 +56,17 @@ const Html5QrcodePlugin = forwardRef<ScannerHandle, Html5QrcodePluginProps>((pro
     html5QrCode.start(
       { facingMode: "environment" },
       { 
-        fps: 25, // Un poco más de fluidez ayuda a la detección nativa
-        qrbox: { width: 320, height: 320 }, // Área más amplia para evitar efecto macro
-        aspectRatio: 1.0,
+        fps: 30, // Mayor fluidez
+        // Eliminamos qrbox y aspectRatio para procesar la imagen completa del sensor
         videoConstraints: {
             facingMode: "environment",
-            width: { min: 640, ideal: 1920, max: 2560 },
+            width: { min: 1280, ideal: 1920, max: 4096 },
+            height: { min: 720, ideal: 1080, max: 2160 },
             // @ts-ignore
-            focusMode: "continuous" // Intentar mantener enfoque automático constante
+            focusMode: "continuous"
         },
         experimentalFeatures: {
-            useBarCodeDetectorIfSupported: true // USO DE API NATIVA (Clave para QR denso)
+            useBarCodeDetectorIfSupported: true 
         }
       },
       props.qrCodeSuccessCallback,

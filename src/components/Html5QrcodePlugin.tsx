@@ -11,6 +11,8 @@ export interface ScannerHandle {
 
 interface Html5QrcodePluginProps {
   qrCodeSuccessCallback: (decodedText: string, decodedResult: any) => void;
+  defaultZoom?: number;
+  autoFlash?: boolean;
 }
 
 const Html5QrcodePlugin = forwardRef<ScannerHandle, Html5QrcodePluginProps>((props, ref) => {
@@ -22,10 +24,8 @@ const Html5QrcodePlugin = forwardRef<ScannerHandle, Html5QrcodePluginProps>((pro
     toggleFlash: async (isOn: boolean) => {
       if (!scannerRef.current) return false;
       try {
-        await scannerRef.current.applyVideoConstraints({
-          // @ts-ignore
-          advanced: [{ torch: isOn }]
-        });
+        // @ts-ignore
+        await scannerRef.current.applyVideoConstraints({ advanced: [{ torch: isOn }] });
         return true;
       } catch (e) {
         return false;
@@ -66,12 +66,30 @@ const Html5QrcodePlugin = forwardRef<ScannerHandle, Html5QrcodePluginProps>((pro
       },
       props.qrCodeSuccessCallback,
       undefined
-    ).then(() => {
+    ).then(async () => {
       const videoElement = document.querySelector(`#${qrcodeRegionId} video`) as HTMLVideoElement;
       if (videoElement && videoElement.srcObject) {
         const track = (videoElement.srcObject as MediaStream).getVideoTracks()[0];
+        const caps = track.getCapabilities();
+
+        // 1. Verificar y Auto-encender Flash si se solicita
         // @ts-ignore
-        if (track.getCapabilities().torch) setFlashAvailable(true);
+        if (caps.torch) {
+          setFlashAvailable(true);
+          if (props.autoFlash) {
+             // @ts-ignore
+             await track.applyConstraints({ advanced: [{ torch: true }] });
+          }
+        }
+
+        // 2. Aplicar Zoom por defecto (ej: x2)
+        // @ts-ignore
+        if (caps.zoom && props.defaultZoom) {
+           // @ts-ignore
+           const finalZoom = Math.min(props.defaultZoom, caps.zoom.max || 1);
+           // @ts-ignore
+           await track.applyConstraints({ advanced: [{ zoom: finalZoom }] });
+        }
       }
     }).catch(console.error);
 

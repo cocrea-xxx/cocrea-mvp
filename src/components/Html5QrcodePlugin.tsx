@@ -1,51 +1,61 @@
-import { Html5QrcodeScanner } from "html5-qrcode";
-import { useEffect } from "react";
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
+import { useEffect, useRef } from "react";
 
 const qrcodeRegionId = "html5qr-code-full-region";
 
 interface Html5QrcodePluginProps {
-  fps?: number;
-  qrbox?: number;
-  disableFlip?: boolean;
-  verbose?: boolean;
   qrCodeSuccessCallback: (decodedText: string, decodedResult: any) => void;
   qrCodeErrorCallback?: (errorMessage: string) => void;
 }
 
 const Html5QrcodePlugin = (props: Html5QrcodePluginProps) => {
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+
   useEffect(() => {
-    // Configuración del escáner
-    const config = {
-      fps: props.fps || 10,
-      qrbox: props.qrbox || 250,
-      aspectRatio: 1.0,
-      disableFlip: props.disableFlip === undefined ? false : props.disableFlip,
+    // 1. Instanciamos el lector
+    const html5QrCode = new Html5Qrcode(qrcodeRegionId);
+    scannerRef.current = html5QrCode;
+
+    // 2. Configuración para usar la cámara trasera ("environment")
+    const config = { 
+      fps: 10, 
+      qrbox: { width: 250, height: 250 },
+      aspectRatio: 1.0 
     };
 
-    const verbose = props.verbose === true;
-
-    // Crear instancia del escáner
-    const html5QrcodeScanner = new Html5QrcodeScanner(
-      qrcodeRegionId,
+    // 3. Iniciar la cámara
+    html5QrCode.start(
+      { facingMode: "environment" }, // Forzar cámara trasera
       config,
-      verbose
-    );
-
-    // Renderizar (iniciar cámara)
-    html5QrcodeScanner.render(
       props.qrCodeSuccessCallback,
-      props.qrCodeErrorCallback
-    );
+      (errorMessage) => {
+        // Ignoramos errores de "no code found" para no ensuciar la consola
+        // Solo llamamos al callback si es crítico
+        if (props.qrCodeErrorCallback) {
+            // props.qrCodeErrorCallback(errorMessage);
+        }
+      }
+    ).catch((err) => {
+      console.error("Error al iniciar cámara:", err);
+    });
 
-    // Limpieza al desmontar el componente (cerrar cámara)
+    // 4. Limpieza al salir
     return () => {
-      html5QrcodeScanner.clear().catch((error) => {
-        console.error("Failed to clear html5QrcodeScanner. ", error);
-      });
+      if (html5QrCode.isScanning) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+        }).catch(err => console.error("Error al detener cámara", err));
+      }
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <div id={qrcodeRegionId} className="w-full max-w-sm mx-auto overflow-hidden rounded-xl border-2 border-slate-200" />;
+  return (
+    <div 
+        id={qrcodeRegionId} 
+        className="w-full h-full object-cover"
+        style={{ width: "100%" }}
+    />
+  );
 };
 
 export default Html5QrcodePlugin;

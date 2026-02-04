@@ -16,16 +16,23 @@ const Html5QrcodePlugin = (props: Html5QrcodePluginProps) => {
     const html5QrCode = new Html5Qrcode(qrcodeRegionId);
     scannerRef.current = html5QrCode;
 
-    // 2. Configuración para usar la cámara trasera ("environment")
+    // 2. Configuración para usar la cámara trasera con ALTA RESOLUCIÓN (HD)
+    // Esto es crítico para leer el QR pequeño del carnet chileno
     const config = { 
       fps: 10, 
-      qrbox: { width: 250, height: 250 },
-      aspectRatio: 1.0 
+      qrbox: { width: 300, height: 300 }, // Área de escaneo más grande
+      aspectRatio: 1.0,
+      videoConstraints: {
+        facingMode: "environment",
+        width: { min: 640, ideal: 1920, max: 3840 },
+        height: { min: 480, ideal: 1080, max: 2160 },
+        focusMode: "continuous" // Intentar forzar auto-enfoque continuo
+      }
     };
 
     // 3. Iniciar la cámara
     html5QrCode.start(
-      { facingMode: "environment" }, // Forzar cámara trasera
+      { facingMode: "environment" }, 
       config,
       props.qrCodeSuccessCallback,
       (errorMessage) => {

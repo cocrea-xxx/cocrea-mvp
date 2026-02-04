@@ -60,12 +60,17 @@ export default function IngresoPage() {
                  />
                  
                  {/* Marco de Enfoque Visual (Overlay) */}
-                 <div className="absolute inset-0 border-[50px] border-black/50 z-10 pointer-events-none flex items-center justify-center">
-                    <div className="w-64 h-64 border-4 border-white/50 rounded-3xl relative">
-                        <div className="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-blue-500 rounded-tl-xl -mt-1 -ml-1"></div>
-                        <div className="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-blue-500 rounded-tr-xl -mt-1 -mr-1"></div>
-                        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-blue-500 rounded-bl-xl -mb-1 -ml-1"></div>
-                        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-blue-500 rounded-br-xl -mb-1 -mr-1"></div>
+                 <div className="absolute inset-0 border-[40px] md:border-[100px] border-black/60 z-10 pointer-events-none flex items-center justify-center">
+                    <div className="w-72 h-72 border-4 border-white/80 rounded-3xl relative shadow-2xl">
+                        <div className="absolute top-0 left-0 w-8 h-8 border-t-8 border-l-8 border-blue-500 rounded-tl-2xl -mt-2 -ml-2"></div>
+                        <div className="absolute top-0 right-0 w-8 h-8 border-t-8 border-r-8 border-blue-500 rounded-tr-2xl -mt-2 -mr-2"></div>
+                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-8 border-l-8 border-blue-500 rounded-bl-2xl -mb-2 -ml-2"></div>
+                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-8 border-r-8 border-blue-500 rounded-br-2xl -mb-2 -mr-2"></div>
+                        
+                        {/* Texto guía en el centro del marco */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-white/20 font-black text-2xl uppercase text-center">Código<br/>Aquí</span>
+                        </div>
                     </div>
                  </div>
 

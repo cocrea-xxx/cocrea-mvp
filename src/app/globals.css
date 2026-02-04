@@ -3,20 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 214, 219, 220;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-rgb: 0, 0, 0;
-  }
+  --matrix-black: #000000;
+  --matrix-green: #00FF41;
+  --matrix-dark-green: #003B00;
+  --matrix-dim: #0D0208;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
+  color: var(--matrix-green);
+  background: var(--matrix-black);
+  /* Aumentar tamaño base de fuente para legibilidad */
+  font-size: 18px; 
+}
+
+/* Efecto de borde brillante (Glow) */
+.neon-border {
+  border: 2px solid var(--matrix-green);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+.neon-text {
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.7);
 }
 
 /* HACK: Forzar que el video del scanner ocupe todo el contenedor sin bordes negros */
@@ -25,4 +32,19 @@ body {
     height: 100% !important;
     object-fit: cover !important;
     border-radius: 0 !important;
+}
+
+/* Scrollbar estilo terminal */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #000; 
+}
+::-webkit-scrollbar-thumb {
+  background: #003B00; 
+  border: 1px solid #00FF41;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00FF41; 
 }

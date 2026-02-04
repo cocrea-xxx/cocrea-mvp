@@ -9,7 +9,7 @@ export default function IngresoPage() {
   const [scanResult, setScanResult] = useState<{ id: string; name?: string } | null>(null);
   const [status, setStatus] = useState<"scanning" | "success">("scanning");
   
-  const [isFlashOn, setIsFlashOn] = useState(true); 
+  const [isFlashOn, setIsFlashOn] = useState(false); 
   const [zoomLevel, setZoomLevel] = useState(2);
 
   const onNewScanResult = (decodedText: string) => {
@@ -33,7 +33,8 @@ export default function IngresoPage() {
   const cycleZoom = () => {
     let nextZoom = 1;
     if (zoomLevel === 1) nextZoom = 2;
-    else if (zoomLevel === 2) nextZoom = 4;
+    else if (zoomLevel === 2) nextZoom = 3;
+    else if (zoomLevel === 3) nextZoom = 4;
     else nextZoom = 1;
     
     setZoomLevel(nextZoom);
@@ -41,65 +42,99 @@ export default function IngresoPage() {
   };
 
   const resetScanner = () => {
+    setStatus("scanning");
+    setScanResult(null);
     window.location.reload();
   };
 
   return (
-    <div className="aspect-container">
-      <main className="content-box">
+    <div className="fixed inset-0 bg-[#000000] flex flex-col">
+      {/* HEADER: BOTONES GRANDES Y SIMBÓLICOS */}
+      <div className="flex w-full h-20 border-b-4 border-[#00ff41] z-50 bg-[#000000]">
         
-        {/* HEADER: SIN GAPS, SIN BORDES EN BOTONES, UNIFICADO */}
-        <div className="absolute top-0 left-0 w-full z-20 flex justify-between items-center bg-black border-b-4 border-[#00ff41]">
-          <div className="flex">
-            <button 
-                onClick={toggleFlash}
-                className={`btn-square ${isFlashOn ? 'btn-square-on' : ''}`}
-            >
-                <span className="text-[10px]">LUZ</span>
-                <span className="text-sm">{isFlashOn ? "ON" : "OFF"}</span>
-            </button>
-            <button 
-                onClick={cycleZoom}
-                className={`btn-square ${zoomLevel > 1 ? 'btn-square-on' : ''}`}
-            >
-                <span className="text-[10px]">ZOOM</span>
-                <span className="text-sm">X{zoomLevel}</span>
-            </button>
-          </div>
+        {/* BOTÓN FLASH (⚡) */}
+        <button 
+            onClick={toggleFlash}
+            className={`flex-1 flex items-center justify-center text-4xl border-r-4 border-[#00ff41] transition-colors duration-150 ${
+                isFlashOn ? 'bg-[#00ff41] text-[#000000]' : 'bg-[#000000] text-[#00ff41]'
+            }`}
+        >
+            ⚡
+        </button>
 
-          <Link href="/" className="btn-square text-4xl font-black">
-            X
-          </Link>
-        </div>
+        {/* BOTÓN ZOOM (🔍) */}
+        <button 
+            onClick={cycleZoom}
+            className={`flex-1 flex items-center justify-center text-3xl border-r-4 border-[#00ff41] transition-colors duration-150 ${
+                zoomLevel > 1 ? 'bg-[#00ff41] text-[#000000]' : 'bg-[#000000] text-[#00ff41]'
+            }`}
+        >
+            <div className="flex flex-col items-center leading-none">
+                <span>🔍</span>
+                <span className="text-sm font-bold mt-1">{zoomLevel}x</span>
+            </div>
+        </button>
 
-        {/* CÁMARA */}
+        {/* BOTÓN SALIR (❌) */}
+        <Link 
+            href="/" 
+            className="flex-1 flex items-center justify-center text-4xl bg-[#000000] text-[#00ff41] active:bg-[#00ff41] active:text-[#000000] transition-colors"
+        >
+            ❌
+        </Link>
+      </div>
+
+      {/* ÁREA PRINCIPAL */}
+      <main className="flex-1 relative w-full h-full bg-[#000000]">
+        
+        {/* ESTADO: ESCANEANDO */}
         {status === "scanning" && (
-          <div className="flex-1 relative bg-black">
+          <div className="w-full h-full relative">
              <Html5QrcodePlugin 
                 ref={scannerRef} 
                 qrCodeSuccessCallback={onNewScanResult}
-                autoFlash={true}
+                autoFlash={false}
                 defaultZoom={2}
              />
+             
+             {/* OVERLAY / MARCO VERDE SIMPLE */}
              <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-                <div className="w-64 h-64 border-4 border-[#00ff41] opacity-20"></div>
+                <div className="w-72 h-72 relative">
+                    {/* Solo esquinas verdes gruesas */}
+                    <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-[#00ff41]"></div>
+                    <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-[#00ff41]"></div>
+                    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-[#00ff41]"></div>
+                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-[#00ff41]"></div>
+                    
+                    {/* Centro de mira opcional */}
+                    <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-[#00ff41] opacity-50 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                </div>
              </div>
           </div>
         )}
 
-        {/* ÉXITO: SIN RASTRO DE BLANCO */}
+        {/* ESTADO: ÉXITO */}
         {status === "success" && scanResult && (
-          <div className="flex-1 flex flex-col items-center justify-center p-4 bg-black z-30">
-            <h2 className="text-3xl font-bold mb-4 uppercase text-[#00ff41]">RECIBIDO</h2>
-            <div className="border-y-4 border-[#00ff41] py-8 w-full text-center mb-8 bg-black">
-                <p className="text-4xl font-bold uppercase text-[#00ff41] px-2">{scanResult.name || "S/N"}</p>
-                <p className="text-xl mt-4 font-mono text-[#00ff41]">ID: {scanResult.id}</p>
+          <div className="w-full h-full flex flex-col items-center justify-center bg-[#000000] p-6 z-50 animate-in fade-in duration-300">
+            
+            {/* CHECK GIGANTE */}
+            <div className="mb-8 text-9xl animate-bounce">
+                ✅
             </div>
+
+            {/* NOMBRE DEL OPERARIO */}
+            <div className="w-full border-y-4 border-[#00ff41] py-8 text-center bg-[#000000] mb-12">
+                <p className="text-5xl font-black uppercase text-[#00ff41] break-words leading-tight">
+                    {scanResult.name || "OK"}
+                </p>
+            </div>
+
+            {/* BOTÓN SIGUIENTE (FLECHA) */}
             <button 
                 onClick={resetScanner} 
-                className="w-full py-8 bg-black text-[#00ff41] text-4xl font-bold border-4 border-[#00ff41] active:bg-[#00ff41] active:text-black transition-colors outline-none"
+                className="w-full h-32 bg-[#00ff41] text-[#000000] text-7xl rounded-2xl flex items-center justify-center active:scale-95 transition-transform shadow-[0_0_20px_rgba(0,255,65,0.5)]"
             >
-                OK &gt;
+                ➡️
             </button>
           </div>
         )}

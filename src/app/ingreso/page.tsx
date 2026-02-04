@@ -9,9 +9,8 @@ export default function IngresoPage() {
   const [scanResult, setScanResult] = useState<{ id: string; name?: string } | null>(null);
   const [status, setStatus] = useState<"scanning" | "success">("scanning");
   
-  // Estados de controles sincronizados con el inicio automático
   const [isFlashOn, setIsFlashOn] = useState(true); 
-  const [zoomLevel, setZoomLevel] = useState(2); // Iniciamos en x2
+  const [zoomLevel, setZoomLevel] = useState(2);
 
   const onNewScanResult = (decodedText: string) => {
     setStatus("success");
@@ -45,33 +44,30 @@ export default function IngresoPage() {
     window.location.reload();
   };
 
-  // Clase de utilidad para botones cuadrados de un mismo tamaño
-  const btnStyle = "w-16 h-16 border-4 border-[#00ff41] font-bold text-xs flex flex-col items-center justify-center transition-colors leading-none aspect-square";
-
   return (
     <div className="aspect-container">
       <main className="content-box">
         
-        {/* HEADER CON BOTONES UNIFICADOS */}
+        {/* HEADER CON BOTONES UNIFICADOS (IDÉNTICOS) */}
         <div className="absolute top-0 left-0 w-full p-2 z-20 flex justify-between items-center bg-black border-b-4 border-[#00ff41]">
           <div className="flex gap-2">
             <button 
                 onClick={toggleFlash}
-                className={`${btnStyle} ${isFlashOn ? 'bg-[#00ff41] text-black' : 'text-[#00ff41] bg-black'}`}
+                className={`btn-square ${isFlashOn ? 'btn-square-on' : ''}`}
             >
-                <span>LUZ</span>
-                <span className="mt-1 text-sm">{isFlashOn ? "ON" : "OFF"}</span>
+                <span className="text-[10px]">LUZ</span>
+                <span className="text-sm">{isFlashOn ? "ON" : "OFF"}</span>
             </button>
             <button 
                 onClick={cycleZoom}
-                className={`${btnStyle} ${zoomLevel > 1 ? 'bg-[#00ff41] text-black' : 'text-[#00ff41] bg-black'}`}
+                className={`btn-square ${zoomLevel > 1 ? 'btn-square-on' : ''}`}
             >
-                <span>ZOOM</span>
-                <span className="mt-1 text-sm">x{zoomLevel}</span>
+                <span className="text-[10px]">ZOOM</span>
+                <span className="text-sm">X{zoomLevel}</span>
             </button>
           </div>
 
-          <Link href="/" className={`${btnStyle} text-[#00ff41] bg-black text-4xl font-black`}>
+          <Link href="/" className="btn-square text-4xl font-black">
             X
           </Link>
         </div>
@@ -86,9 +82,7 @@ export default function IngresoPage() {
                 defaultZoom={2}
              />
              <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-                <div className="w-64 h-64 border-4 border-[#00ff41] flex items-center justify-center">
-                    <span className="text-xl font-bold uppercase opacity-30 text-[#00ff41]">ENFOQUE QR</span>
-                </div>
+                <div className="w-64 h-64 border-4 border-[#00ff41] opacity-30"></div>
              </div>
           </div>
         )}
@@ -96,14 +90,14 @@ export default function IngresoPage() {
         {/* ÉXITO */}
         {status === "success" && scanResult && (
           <div className="flex-1 flex flex-col items-center justify-center p-4 bg-black z-30">
-            <h2 className="text-4xl font-bold mb-4 uppercase tracking-tighter text-[#00ff41]">RECIBIDO</h2>
-            <div className="border-y-4 border-[#00ff41] py-6 w-full text-center mb-8 bg-black">
-                <p className="text-4xl font-bold break-words px-2 leading-none uppercase text-[#00ff41]">{scanResult.name || "S/N"}</p>
-                <p className="text-lg mt-4 font-mono text-[#00ff41]">ID: {scanResult.id}</p>
+            <h2 className="text-3xl font-bold mb-4 uppercase text-[#00ff41]">RECIBIDO</h2>
+            <div className="border-y-4 border-[#00ff41] py-8 w-full text-center mb-8">
+                <p className="text-4xl font-bold uppercase text-[#00ff41] px-2">{scanResult.name || "S/N"}</p>
+                <p className="text-xl mt-4 font-mono text-[#00ff41]">ID: {scanResult.id}</p>
             </div>
             <button 
                 onClick={resetScanner} 
-                className="w-full py-8 border-4 border-[#00ff41] bg-black text-[#00ff41] text-4xl font-bold active:bg-[#00ff41] active:text-black transition-colors"
+                className="w-full py-8 border-4 border-[#00ff41] bg-black text-[#00ff41] text-4xl font-bold active:bg-[#00ff41] active:text-black"
             >
                 OK &gt;
             </button>

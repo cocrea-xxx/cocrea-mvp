@@ -19,11 +19,15 @@ export default function Home() {
           </Link>
 
           {/* Placeholders para futuros módulos */}
-          <div className="flex flex-col items-center p-6 bg-slate-50 rounded-2xl opacity-50">
-            <span className="text-4xl mb-4">📊</span>
-            <h3 className="font-bold text-slate-700">Dashboard Finanzas</h3>
-            <p className="text-xs text-slate-400 mt-2">Próximamente</p>
-          </div>
+          {/* Generador de QR para Administración */}
+          <Link 
+            href="/generador"
+            className="flex flex-col items-center p-6 bg-slate-800 text-white rounded-2xl hover:bg-slate-700 transition-all cursor-pointer shadow-lg"
+          >
+            <span className="text-4xl mb-4">🖨️</span>
+            <h3 className="font-bold">Generador QR</h3>
+            <p className="text-xs text-slate-400 mt-2">Imprimir códigos de casco</p>
+          </Link>
 
           <div className="flex flex-col items-center p-6 bg-slate-50 rounded-2xl opacity-50">
             <span className="text-4xl mb-4">👥</span>

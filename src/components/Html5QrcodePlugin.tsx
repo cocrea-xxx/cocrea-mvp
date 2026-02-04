@@ -1,5 +1,5 @@
 import { Html5Qrcode } from "html5-qrcode";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const qrcodeRegionId = "html5qr-code-full-region";
 

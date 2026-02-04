@@ -37,11 +37,7 @@ body {
   box-sizing: border-box;
 }
 
-/* 
-   Geometría Estricta: 
-   Usamos el 90% de la dimensión mínima (dmin) para asegurar 
-   que el cuadro siempre quepa en pantalla.
-*/
+/* Geometría Estricta */
 @media (orientation: portrait) {
   .content-box {
     width: 90dvw;
@@ -62,11 +58,10 @@ body {
   }
 }
 
-/* CLASE ÚNICA PARA BOTONES CUADRADOS */
+/* CLASE ÚNICA SIN BORDES PARA CONTROLES */
 .btn-square {
   width: 64px;
   height: 64px;
-  border: 4px solid var(--matrix-green);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -74,19 +69,17 @@ body {
   font-weight: bold;
   text-transform: uppercase;
   cursor: pointer;
-  transition: none;
   background-color: var(--matrix-black);
   color: var(--matrix-green);
+  border: none;
   flex-shrink: 0;
 }
 
-/* Estado Activo (Encendido) */
 .btn-square-on {
   background-color: var(--matrix-green) !important;
   color: var(--matrix-black) !important;
 }
 
-/* Limpieza de video */
 #html5qr-code-full-region video {
     width: 100% !important;
     height: 100% !important;

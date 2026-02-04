@@ -48,9 +48,9 @@ export default function IngresoPage() {
     <div className="aspect-container">
       <main className="content-box">
         
-        {/* HEADER CON BOTONES UNIFICADOS (IDÉNTICOS) */}
-        <div className="absolute top-0 left-0 w-full p-2 z-20 flex justify-between items-center bg-black border-b-4 border-[#00ff41]">
-          <div className="flex gap-2">
+        {/* HEADER: SIN GAPS, SIN BORDES EN BOTONES, UNIFICADO */}
+        <div className="absolute top-0 left-0 w-full z-20 flex justify-between items-center bg-black border-b-4 border-[#00ff41]">
+          <div className="flex">
             <button 
                 onClick={toggleFlash}
                 className={`btn-square ${isFlashOn ? 'btn-square-on' : ''}`}
@@ -82,22 +82,22 @@ export default function IngresoPage() {
                 defaultZoom={2}
              />
              <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-                <div className="w-64 h-64 border-4 border-[#00ff41] opacity-30"></div>
+                <div className="w-64 h-64 border-4 border-[#00ff41] opacity-20"></div>
              </div>
           </div>
         )}
 
-        {/* ÉXITO */}
+        {/* ÉXITO: SIN RASTRO DE BLANCO */}
         {status === "success" && scanResult && (
           <div className="flex-1 flex flex-col items-center justify-center p-4 bg-black z-30">
             <h2 className="text-3xl font-bold mb-4 uppercase text-[#00ff41]">RECIBIDO</h2>
-            <div className="border-y-4 border-[#00ff41] py-8 w-full text-center mb-8">
+            <div className="border-y-4 border-[#00ff41] py-8 w-full text-center mb-8 bg-black">
                 <p className="text-4xl font-bold uppercase text-[#00ff41] px-2">{scanResult.name || "S/N"}</p>
                 <p className="text-xl mt-4 font-mono text-[#00ff41]">ID: {scanResult.id}</p>
             </div>
             <button 
                 onClick={resetScanner} 
-                className="w-full py-8 border-4 border-[#00ff41] bg-black text-[#00ff41] text-4xl font-bold active:bg-[#00ff41] active:text-black"
+                className="w-full py-8 bg-black text-[#00ff41] text-4xl font-bold border-4 border-[#00ff41] active:bg-[#00ff41] active:text-black transition-colors outline-none"
             >
                 OK &gt;
             </button>

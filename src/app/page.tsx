@@ -10,12 +10,12 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Tarjeta de Simulación para Pruebas */}
           <Link 
-            href="/scan/OP-001"
-            className="group flex flex-col items-center p-6 border-2 border-dashed border-blue-200 rounded-2xl hover:bg-blue-50 transition-all cursor-pointer"
+            href="/ingreso"
+            className="group flex flex-col items-center p-8 border-4 border-blue-500 bg-blue-50 rounded-3xl hover:bg-blue-600 hover:border-blue-600 hover:text-white transition-all cursor-pointer shadow-lg"
           >
-            <span className="text-4xl mb-4 group-hover:scale-110 transition-transform">👷</span>
-            <h3 className="font-bold text-slate-700">Simular Escaneo QR</h3>
-            <p className="text-xs text-slate-400 mt-2">Prueba para operario #001</p>
+            <span className="text-6xl mb-4 group-hover:scale-110 transition-transform">📸</span>
+            <h3 className="font-extrabold text-2xl text-blue-900 group-hover:text-white uppercase tracking-wider">Marcar Asistencia</h3>
+            <p className="text-sm text-blue-600/70 group-hover:text-blue-100 mt-2 font-bold">TOCAR AQUÍ PARA ESCANEAR</p>
           </Link>
 
           {/* Placeholders para futuros módulos */}

@@ -11,15 +11,15 @@ const Html5QrcodePlugin = (props: Html5QrcodePluginProps) => {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [hasFlash, setHasFlash] = useState(false);
   const [isFlashOn, setIsFlashOn] = useState(false);
-  const [zoomCap, setZoomCap] = useState<{ min: number; max: number; current: number } | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1); // 1, 2, 4
 
   useEffect(() => {
     const html5QrCode = new Html5Qrcode(qrcodeRegionId);
     scannerRef.current = html5QrCode;
 
     const config = { 
-      fps: 15, 
-      qrbox: { width: 300, height: 300 },
+      fps: 20, 
+      qrbox: { width: 280, height: 280 },
       aspectRatio: 1.0,
       videoConstraints: {
         facingMode: "environment",
@@ -39,27 +39,15 @@ const Html5QrcodePlugin = (props: Html5QrcodePluginProps) => {
          const stream = videoElement.srcObject as MediaStream;
          const track = stream.getVideoTracks()[0];
          const capabilities = track.getCapabilities();
-         const settings = track.getSettings();
-
-         // @ts-ignore
-         if (capabilities.zoom) {
-            setZoomCap({
-                // @ts-ignore
-                min: capabilities.zoom.min,
-                // @ts-ignore
-                max: capabilities.zoom.max,
-                // @ts-ignore
-                current: settings.zoom || capabilities.zoom.min
-            });
-            // Auto-zoom 2x para QRs pequeños
-            // @ts-ignore
-            if (capabilities.zoom.max >= 2) {
-                // @ts-ignore
-                track.applyConstraints({ advanced: [{ zoom: 2.0 }] });
-            }
-         }
+         
          // @ts-ignore
          if (capabilities.torch) setHasFlash(true);
+         
+         // Inicializar zoom x1
+         // @ts-ignore
+         if (capabilities.zoom) {
+            setZoomLevel(1);
+         }
       }
     }).catch(err => console.error(err));
 
@@ -81,16 +69,26 @@ const Html5QrcodePlugin = (props: Html5QrcodePluginProps) => {
      } catch (err) { console.error(err); }
   };
 
-  const handleZoom = async (e: React.ChangeEvent<HTMLInputElement>) => {
-     const zoomValue = Number(e.target.value);
-     setZoomCap(prev => prev ? { ...prev, current: zoomValue } : null);
-     try {
+  const cycleZoom = async () => {
+    let nextZoom = 1;
+    if (zoomLevel === 1) nextZoom = 2;
+    else if (zoomLevel === 2) nextZoom = 4;
+    else nextZoom = 1;
+
+    setZoomLevel(nextZoom);
+
+    try {
         const videoElement = document.querySelector(`#${qrcodeRegionId} video`) as HTMLVideoElement;
         if (videoElement && videoElement.srcObject) {
             const stream = videoElement.srcObject as MediaStream;
             const track = stream.getVideoTracks()[0];
+            const capabilities = track.getCapabilities();
+            
+            // @ts-ignore - Limitar al máximo del hardware si 4x no es posible
+            const finalZoom = Math.min(nextZoom, capabilities.zoom?.max || 1);
+            
             // @ts-ignore
-            await track.applyConstraints({ advanced: [{ zoom: zoomValue }] });
+            await track.applyConstraints({ advanced: [{ zoom: finalZoom }] });
         }
      } catch (err) { console.error(err); }
   };
@@ -99,26 +97,23 @@ const Html5QrcodePlugin = (props: Html5QrcodePluginProps) => {
     <div className="w-full h-full relative">
         <div id={qrcodeRegionId} className="w-full h-full object-cover" />
         
-        {/* CONTROLES MINIMALISTAS */}
-        <div className="absolute bottom-10 left-0 w-full px-8 flex flex-col items-center gap-6 z-50">
-            {zoomCap && (
-                <div className="w-full flex items-center gap-4 bg-black border-2 border-[#00ff41] p-2">
-                    <span className="font-bold">ZOOM</span>
-                    <input 
-                        type="range" 
-                        min={zoomCap.min} max={zoomCap.max} step={0.1}
-                        value={zoomCap.current}
-                        onChange={handleZoom}
-                        className="flex-1 accent-[#00ff41]"
-                    />
-                </div>
-            )}
+        {/* CONTROLES TÁCTICOS */}
+        <div className="absolute bottom-6 left-0 w-full px-6 flex justify-between items-center z-50">
+            <button 
+                onClick={cycleZoom}
+                className="btn-matrix w-24 h-24 text-3xl flex flex-col items-center justify-center leading-none"
+            >
+                <span className="text-sm">ZOOM</span>
+                <span>x{zoomLevel}</span>
+            </button>
+
             {hasFlash && (
                 <button 
                     onClick={toggleFlash}
-                    className="btn-matrix w-full py-4 text-xl"
+                    className={`btn-matrix w-24 h-24 text-3xl flex flex-col items-center justify-center leading-none ${isFlashOn ? 'bg-[#00ff41] text-black' : ''}`}
                 >
-                    {isFlashOn ? "APAGAR LUZ" : "ENCENDER LUZ"}
+                    <span className="text-sm">LUZ</span>
+                    <span>{isFlashOn ? "ON" : "OFF"}</span>
                 </button>
             )}
         </div>
